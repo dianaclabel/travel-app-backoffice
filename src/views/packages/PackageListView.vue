@@ -33,13 +33,14 @@ const columns: TableColumn<TourismPackage>[] = [
   },
   {
     accessorKey: 'categories',
-    header: 'categorias',
+    header: 'Categorias',
     cell: ({ row }) => {
       return (row.getValue('categories') as string[])?.join(', ')
     },
   },
   {
     id: 'action',
+    header: 'Acciones',
   },
 ]
 
@@ -90,8 +91,20 @@ async function deletePackage(id: string) {
     <UTable :data="data" :columns="columns" class="flex-1" :loading="loading">
       <template #action-cell="{ row }">
         <UButton
+          icon="i-lucide-eye"
+          color="info"
+          variant="ghost"
+          :to="`/paquetes/${row.original._id}`"
+        />
+        <UButton
+          icon="i-lucide-pen"
+          color="warning"
+          variant="ghost"
+          :to="`/paquetes/${row.original._id}/editar`"
+        />
+        <UButton
           icon="i-lucide-trash-2"
-          color="neutral"
+          color="error"
           variant="ghost"
           @click="deletePackage(row.original._id)"
         />

@@ -28,6 +28,11 @@ const router = createRouter({
           name: 'newPackage',
           component: () => import('../views/packages/NewPackageView.vue'),
         },
+        {
+          path: ':id',
+          name: 'packageDetail',
+          component: () => import('../views/packages/PackageDetailView.vue'),
+        },
       ],
     },
   ],
