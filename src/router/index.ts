@@ -33,7 +33,17 @@ const router = createRouter({
           name: 'packageDetail',
           component: () => import('../views/packages/PackageDetailView.vue'),
         },
+        {
+          path: ':id/editar',
+          name: 'editPackage',
+          component: () => import('../views/packages/PackageEditView.vue'),
+        },
       ],
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: () => import('../views/NotFoundView.vue'),
     },
   ],
 })

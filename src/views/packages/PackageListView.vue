@@ -2,10 +2,11 @@
 import { onMounted, ref } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { TourismPackage } from '@/interfaces/tourism-package'
+import { apiFetch } from '@/api'
 
 const toast = useToast()
 
-const data = ref([])
+const data = ref<TourismPackage[]>([])
 const loading = ref(false)
 
 const columns: TableColumn<TourismPackage>[] = [
@@ -50,32 +51,30 @@ onMounted(async () => {
 
 async function fetchPackages() {
   loading.value = true
-  const response = await fetch(import.meta.env.VITE_API_URL + '/tourism-packages')
-  data.value = await response.json()
+  data.value = await apiFetch('/tourism-packages')
   loading.value = false
 }
 
 async function deletePackage(id: string) {
-  const response = await fetch(import.meta.env.VITE_API_URL + '/tourism-packages/' + id, {
-    method: 'DELETE',
-  })
+  try {
+    await apiFetch('/tourism-packages/' + id, {
+      method: 'DELETE',
+    })
 
-  if (!response.ok) {
+    toast.add({
+      title: 'Éxito',
+      description: 'El paquete ha sido eliminado.',
+      color: 'success',
+    })
+
+    await fetchPackages()
+  } catch (error) {
     toast.add({
       title: 'Error',
       description: 'Ocurrió un error al eliminar el paquete.',
       color: 'error',
     })
-    return
   }
-
-  toast.add({
-    title: 'Éxito',
-    description: 'El paquete ha sido eliminado.',
-    color: 'success',
-  })
-
-  await fetchPackages()
 }
 </script>
 
@@ -88,9 +87,16 @@ async function deletePackage(id: string) {
       </div>
     </template>
 
-    <UTable :data="data" :columns="columns" class="flex-1" :loading="loading">
+    <UTable
+      id="table"
+      :data="data"
+      :columns="columns"
+      class="flex-1 custom-table"
+      :loading="loading"
+    >
       <template #action-cell="{ row }">
         <UButton
+          class="link"
           icon="i-lucide-eye"
           color="info"
           variant="ghost"
@@ -112,3 +118,9 @@ async function deletePackage(id: string) {
     </UTable>
   </UCard>
 </template>
+
+<style scoped>
+.custom-table :deep(tbody tr:hover) {
+  background-color: rgba(53, 53, 53, 0.027);
+}
+</style>
