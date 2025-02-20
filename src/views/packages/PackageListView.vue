@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { TourismPackage } from '@/interfaces/tourism-package'
 
+const toast = useToast()
+
 const data = ref([])
 const loading = ref(false)
 
@@ -32,24 +34,68 @@ const columns: TableColumn<TourismPackage>[] = [
   {
     accessorKey: 'categories',
     header: 'categorias',
+    cell: ({ row }) => {
+      return (row.getValue('categories') as string[])?.join(', ')
+    },
+  },
+  {
+    id: 'action',
   },
 ]
 
 onMounted(async () => {
+  await fetchPackages()
+})
+
+async function fetchPackages() {
   loading.value = true
   const response = await fetch(import.meta.env.VITE_API_URL + '/tourism-packages')
   data.value = await response.json()
   loading.value = false
-})
+}
+
+async function deletePackage(id: string) {
+  const response = await fetch(import.meta.env.VITE_API_URL + '/tourism-packages/' + id, {
+    method: 'DELETE',
+  })
+
+  if (!response.ok) {
+    toast.add({
+      title: 'Error',
+      description: 'Ocurrió un error al eliminar el paquete.',
+      color: 'error',
+    })
+    return
+  }
+
+  toast.add({
+    title: 'Éxito',
+    description: 'El paquete ha sido eliminado.',
+    color: 'success',
+  })
+
+  await fetchPackages()
+}
 </script>
 
 <template>
-  <div>
-    <div class="justify-between flex">
-      <h1 class="text-xl font-bold">Paquetes</h1>
-      <UButton to="/paquetes/nuevo">Nuevo paquete</UButton>
-    </div>
+  <UCard>
+    <template #header>
+      <div class="justify-between flex">
+        <h1 class="text-xl font-bold">Paquetes</h1>
+        <UButton to="/paquetes/nuevo">Nuevo paquete</UButton>
+      </div>
+    </template>
 
-    <UTable :data="data" :columns="columns" class="flex-1" :loading="loading" />
-  </div>
+    <UTable :data="data" :columns="columns" class="flex-1" :loading="loading">
+      <template #action-cell="{ row }">
+        <UButton
+          icon="i-lucide-trash-2"
+          color="neutral"
+          variant="ghost"
+          @click="deletePackage(row.original._id)"
+        />
+      </template>
+    </UTable>
+  </UCard>
 </template>
