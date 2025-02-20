@@ -5,7 +5,22 @@ import { useColorMode } from '@vueuse/core'
 
 const mode = useColorMode()
 
-const items = ref([
+const topbar = ref([
+  [
+    {
+      label: 'Travel App',
+      icon: 'i-lucide-tickets-plane',
+      to: '/',
+    },
+  ],
+  [
+    {
+      slot: 'color-mode',
+    },
+  ],
+])
+
+const sidebar = ref([
   [
     {
       label: 'Home',
@@ -23,24 +38,12 @@ const items = ref([
       to: '/paquetes',
     },
   ],
-  [
-    {
-      slot: 'color-mode',
-    },
-    {
-      label: 'GitHub',
-      icon: 'i-simple-icons-github',
-      badge: '3.8k',
-      to: 'https://github.com/nuxt/ui',
-      target: '_blank',
-    },
-  ],
 ])
 </script>
 
 <template>
   <UApp>
-    <UNavigationMenu color="neutral" :items="items" class="w-full">
+    <UNavigationMenu :items="topbar" class="w-full px-4 shadow">
       <template #color-mode>
         <UButton
           :icon="mode === 'dark' ? 'i-lucide-moon' : 'i-lucide-sun'"
@@ -51,8 +54,15 @@ const items = ref([
       </template>
     </UNavigationMenu>
 
-    <UContainer>
-      <RouterView />
-    </UContainer>
+    <div class="grid grid-cols-[1fr_8fr] mt-8">
+      <div class="px-4">
+        <UNavigationMenu color="neutral" :items="sidebar" class="w-full" orientation="vertical" />
+      </div>
+      <div>
+        <UContainer>
+          <RouterView />
+        </UContainer>
+      </div>
+    </div>
   </UApp>
 </template>
