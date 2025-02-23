@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/lib/api-client'
 import type { TourismPackage } from '@/interfaces/tourism-package'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'

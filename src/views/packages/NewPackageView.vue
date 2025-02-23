@@ -3,6 +3,7 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { apiFetch } from '@/lib/api-client'
 
 const toast = useToast()
 const router = useRouter()
@@ -27,25 +28,20 @@ const state = reactive<Partial<Schema>>({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   console.log(event.data)
 
-  const response = await fetch(import.meta.env.VITE_API_URL + '/tourism-packages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(event.data),
-  })
-
-  if (!response.ok) {
+  try {
+    await apiFetch('/tourism-packages', {
+      method: 'POST',
+      body: event.data,
+    })
+    toast.add({ title: 'Success', description: 'The package has been created.', color: 'success' })
+    router.push('/paquetes')
+  } catch (error) {
     toast.add({
       title: 'Error',
       description: 'An error occurred while submitting the form.',
       color: 'error',
     })
-    return
   }
-
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-  router.push('/paquetes')
 }
 </script>
 

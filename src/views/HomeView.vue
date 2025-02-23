@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { authClient } from '@/lib/auth-client'
+
+const session = authClient.useSession()
+</script>
 
 <template>
   <main>
@@ -11,5 +15,9 @@
       }"
       color="neutral"
     />
+    <div v-if="session.data">
+      <pre>{{ session.data.user.name }}</pre>
+      <UButton @click="authClient.signOut()">Sign out</UButton>
+    </div>
   </main>
 </template>

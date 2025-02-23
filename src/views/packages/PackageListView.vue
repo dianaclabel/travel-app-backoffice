@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { TourismPackage } from '@/interfaces/tourism-package'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/lib/api-client'
 
 const toast = useToast()
 

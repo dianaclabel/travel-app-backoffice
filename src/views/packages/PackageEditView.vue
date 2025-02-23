@@ -4,7 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/lib/api-client'
 
 const route = useRoute()
 
